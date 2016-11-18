@@ -3,6 +3,8 @@ class PrimitiveWallpaper < Formula
     homepage "https://github.com/yukunlin/homebrew-primitive-wallpaper"
     head "https://github.com/yukunlin/homebrew-primitive-wallpaper.git", :branch => "master"
 
+    option "with-launchd", "Add launch daemon to generate wallpapers automatically"
+
     depends_on "primitive"
     depends_on "python" if MacOS.version <= :snow_leopard
 
@@ -25,5 +27,32 @@ class PrimitiveWallpaper < Formula
 
         bin.install Dir[libexec/"bin/*"]
         bin.env_script_all_files(libexec/"bin", :PYTHONPATH => ENV["PYTHONPATH"])
+    end
+
+    if build.with? "launchd"
+        plist_options :startup => true
+        def plist; <<-EOS.undent
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+            <plist version="1.0">
+            <dict>
+                <key>Label</key>
+                <string>#{plist_name}</string>
+                <key>ProgramArguments</key>
+                <array>
+                    <string>#{opt_bin}/primitive-wallpaper</string>
+                    <string>-o</string>
+                    <string>~/Pictures/primitive-wallpapers</string>
+                    <string>-s</string>
+                    <string>5000</string>
+                </array>
+                <key>RunAtLoad</key>
+                <true/>
+                <key>StartInterval</key>
+                <integer>21600</integer>
+            </dict>
+            </plist>
+            EOS
+        end
     end
 end
