@@ -1,6 +1,6 @@
 ##Setup
-###API Key (Must have)
-[Get an API key from Flickr.](https://www.flickr.com/services/api/misc.api_keys.html)
+###API Key (Must Have)
+[Get an API key from Flickr.](https://www.flickr.com/services/api/misc.api_keys.html) Store in ```~/.flickr_api_key```.
 
 ```
 echo MY_API_KEY > ~/.flickr_api_key
@@ -12,7 +12,7 @@ brew install --HEAD  primitive-wallpaper --with-launchd
 ```
 
 ###Start Launch Agent
-Generate a wallpaper every 6 hours and put it in ```~/Pictures/primitive-wallpapers```.
+Launch agent runs ```primitive-wallpaper``` every 6 hours to generate a wallpaper. Puts it in ```~/Pictures/primitive-wallpapers```.
 
 ```
 brew services start yukunlin/primitive-wallpaper/primitive-wallpaper
