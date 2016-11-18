@@ -3,7 +3,7 @@ class PrimitiveWallpaper < Formula
     homepage "https://github.com/yukunlin/homebrew-primitive-wallpaper"
     head "https://github.com/yukunlin/homebrew-primitive-wallpaper.git", :branch => "master"
 
-    option "with-launchd", "Add launch daemon to generate wallpapers automatically"
+    option "with-launchd", "Add launch agent to generate wallpapers automatically"
 
     depends_on "primitive"
     depends_on "python" if MacOS.version <= :snow_leopard
