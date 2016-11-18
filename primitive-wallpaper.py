@@ -40,6 +40,7 @@ class Config(AttrDict):
         self.m = clamp(self.m, 0, 8)
         if self.m == 6:
             self.a = 0
+            self.rep = 19
             self.n = random.randint(500, 2000)
     @property
     def description(self):
