@@ -7,6 +7,9 @@ import subprocess
 import argparse
 import datetime
 
+"""Based off https://github.com/fogleman/primitive/blob/master/bot/main.py
+"""
+
 with open(os.path.expanduser('~/.flickr_api_key'), 'r') as key_file:
     FLICKR_API_KEY = key_file.readline().rstrip()
 
