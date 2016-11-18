@@ -41,7 +41,7 @@ class Config(AttrDict):
         if self.m == 6:
             self.a = 0
             self.rep = 19
-            self.n = random.randint(500, 2000)
+            self.n = random.randint(200, 1500)
     @property
     def description(self):
         total = self.n + self.n * self.rep
