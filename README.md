@@ -27,3 +27,6 @@ primitive-wallpaper -o ~/Pictures/primitive-wallpapers -s 3000 -n 10
 ```
 brew services stop yukunlin/primitive-wallpaper/primitive-wallpaper
 ```
+
+##Also see
+* https://github.com/fogleman/primitive
