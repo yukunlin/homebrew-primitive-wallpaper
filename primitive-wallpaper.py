@@ -6,6 +6,7 @@ import requests
 import subprocess
 import argparse
 import datetime
+import time
 
 """Based off https://github.com/fogleman/primitive/blob/master/bot/main.py
 """
@@ -13,10 +14,12 @@ import datetime
 with open(os.path.expanduser('~/.flickr_api_key'), 'r') as key_file:
     FLICKR_API_KEY = key_file.readline().rstrip()
 
+
 class AttrDict(dict):
     def __init__(self, *args, **kwargs):
         super(AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
+
 
 class Config(AttrDict):
     def randomize(self):
@@ -25,6 +28,7 @@ class Config(AttrDict):
         self.rep = 0
         self.a = 128
         self.r = 256
+
     def parse(self, text):
         text = (text or '').lower()
         tokens = text.split()
@@ -36,14 +40,17 @@ class Config(AttrDict):
                 self.n = int(token)
             except Exception:
                 pass
+
     def validate(self):
         self.m = clamp(self.m, 0, 8)
         if self.m == 6:
             self.n = random.randint(1500, 2000)
+
     @property
     def description(self):
         total = self.n + self.n * self.rep
         return '%d %s' % (total, MODE_NAMES[self.m])
+
 
 def clamp(x, lo, hi):
     if x < lo:
@@ -52,11 +59,13 @@ def clamp(x, lo, hi):
         x = hi
     return x
 
+
 def random_date(max_days_ago=1000):
     today = datetime.date.today()
     days = random.randint(1, max_days_ago)
     d = today - datetime.timedelta(days=days)
     return d.strftime('%Y-%m-%d')
+
 
 def interesting(date=None):
     url = 'https://api.flickr.com/services/rest/'
@@ -70,6 +79,7 @@ def interesting(date=None):
         params['date'] = date
     r = requests.get(url, params=params)
     return r.json()['photos']['photo']
+
 
 def get_aspect_ratio(p):
     url = 'https://api.flickr.com/services/rest/'
@@ -86,6 +96,7 @@ def get_aspect_ratio(p):
 
     return float(thumbnail[0]['width']) / float(thumbnail[0]['height'])
 
+
 def photo_url(p, size=None):
     # See: https://www.flickr.com/services/api/misc.urls.html
     if size:
@@ -95,10 +106,12 @@ def photo_url(p, size=None):
         url = 'https://farm%s.staticflickr.com/%s/%s_%s.jpg'
         return url % (p['farm'], p['server'], p['id'], p['secret'])
 
+
 def download_photo(url, path):
     r = requests.get(url)
     with open(path, 'wb') as fp:
         fp.write(r.content)
+
 
 def primitive(primitive_path, **kwargs):
     args = []
@@ -157,6 +170,25 @@ if __name__ == '__main__':
     parser.add_argument('--primitive_path', help="path to primitive executable", default='/usr/local/bin/primitive')
     parser.add_argument('-n', '--num', type=int, help="number of wallpapers to generate", default=1)
     args = parser.parse_args()
+
+    # check network status
+    max_retries = 10
+    attempt = 0
+    response = None
+
+    while attempt < max_retries:
+        attempt += 1
+        try:
+            print 'Checking network...'
+            response = interesting()
+            break
+        except:
+            print 'No network, retrying...'
+            time.sleep(5)
+
+    if response is None:
+        print 'No network connection'
+        exit(1)
 
     for n in xrange(args.num):
         create_wallpaper(args)
