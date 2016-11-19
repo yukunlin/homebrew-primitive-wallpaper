@@ -3,7 +3,7 @@ class PrimitiveWallpaper < Formula
     homepage "https://github.com/yukunlin/homebrew-primitive-wallpaper"
     head "https://github.com/yukunlin/homebrew-primitive-wallpaper.git", :branch => "master"
 
-    option "with-launchd", "Add launch agent to generate wallpapers automatically"
+    option "without-launchd", "Without launch agent to generate wallpapers automatically"
 
     depends_on "primitive"
     depends_on "python" if MacOS.version <= :snow_leopard
@@ -29,7 +29,7 @@ class PrimitiveWallpaper < Formula
         bin.env_script_all_files(libexec/"bin", :PYTHONPATH => ENV["PYTHONPATH"])
     end
 
-    if build.with? "launchd"
+    if !build.without? "launchd"
         plist_options :startup => true
         def plist; <<-EOS.undent
             <?xml version="1.0" encoding="UTF-8"?>
@@ -38,18 +38,43 @@ class PrimitiveWallpaper < Formula
             <dict>
                 <key>Label</key>
                 <string>#{plist_name}</string>
+
                 <key>ProgramArguments</key>
                 <array>
                     <string>#{opt_bin}/primitive-wallpaper</string>
                     <string>-o</string>
-                    <string>~/Pictures/primitive-wallpapers</string>
+                    <string>~/Pictures/primitive-wallpaper</string>
                     <string>-s</string>
-                    <string>5000</string>
+                    <string>4000</string>
                 </array>
+
                 <key>RunAtLoad</key>
                 <true/>
-                <key>StartInterval</key>
-                <integer>21600</integer>
+
+                <key>ProcessType</key>
+                <string>Background</string>
+
+                <key>StartCalendarInterval</key>
+                <array>
+                    <dict>
+                        <key>Hour</key>
+                        <integer>12</integer>
+                        <key>Minute</key>
+                        <integer>0</integer>
+                    </dict>
+                    <dict>
+                        <key>Hour</key>
+                        <integer>18</integer>
+                        <key>Minute</key>
+                        <integer>0</integer>
+                    </dict>
+                    <dict>
+                        <key>Hour</key>
+                        <integer>21</integer>
+                        <key>Minute</key>
+                        <integer>0</integer>
+                    </dict>
+                </array>
             </dict>
             </plist>
             EOS
