@@ -8,7 +8,7 @@ echo MY_API_KEY > ~/.flickr_api_key
 
 ###Install
 ```
-brew install --HEAD  primitive-wallpaper
+brew tap yukunlin/primitive-wallpaper && brew install --HEAD  primitive-wallpaper
 ```
 
 ###Start Launch Agent
