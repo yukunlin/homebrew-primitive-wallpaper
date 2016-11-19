@@ -20,11 +20,11 @@ class AttrDict(dict):
 
 class Config(AttrDict):
     def randomize(self):
-        self.m = random.choice([1, 5, 6, 7, 8])
-        self.n = random.randint(15, 60) * 10
+        self.m = random.choice([1, 5, 6, 7])
+        self.n = random.randint(18, 50) * 10
         self.rep = 0
         self.a = 128
-        self.r = 300
+        self.r = 256
     def parse(self, text):
         text = (text or '').lower()
         tokens = text.split()
@@ -39,9 +39,7 @@ class Config(AttrDict):
     def validate(self):
         self.m = clamp(self.m, 0, 8)
         if self.m == 6:
-            self.a = 0
-            self.rep = 19
-            self.n = random.randint(200, 1500)
+            self.n = random.randint(1500, 2000)
     @property
     def description(self):
         total = self.n + self.n * self.rep
@@ -73,28 +71,20 @@ def interesting(date=None):
     r = requests.get(url, params=params)
     return r.json()['photos']['photo']
 
-def filter_by_aspect_ratio(photo_ids, min_ratio, max_ratio):
+def get_aspect_ratio(p):
     url = 'https://api.flickr.com/services/rest/'
+    params = dict(
+        api_key=FLICKR_API_KEY,
+        format='json',
+        nojsoncallback=1,
+        method='flickr.photos.getSizes',
+        photo_id=p['id']
+    )
+    r = requests.get(url, params=params)
+    sizes = r.json()['sizes']['size']
+    thumbnail = filter(lambda x: x['label']=='Thumbnail', sizes)
 
-    def check_photo(p):
-        params = dict(
-            api_key=FLICKR_API_KEY,
-            format='json',
-            nojsoncallback=1,
-            method='flickr.photos.getSizes',
-            photo_id=p['id']
-        )
-        r = requests.get(url, params=params)
-        sizes = r.json()['sizes']['size']
-        thumbnail = filter(lambda x: x['label']=='Thumbnail', sizes)
-        if not thumbnail:
-            return False
-
-        ratio = float(thumbnail[0]['width']) / float(thumbnail[0]['height'])
-
-        return ratio >= min_ratio and ratio <= max_ratio
-
-    return filter(check_photo, photo_ids)
+    return float(thumbnail[0]['width']) / float(thumbnail[0]['height'])
 
 def photo_url(p, size=None):
     # See: https://www.flickr.com/services/api/misc.urls.html
@@ -110,7 +100,7 @@ def download_photo(url, path):
     with open(path, 'wb') as fp:
         fp.write(r.content)
 
-def primitive(**kwargs):
+def primitive(primitive_path, **kwargs):
     args = []
     for k, v in kwargs.items():
         if v is None:
@@ -118,19 +108,26 @@ def primitive(**kwargs):
         args.append('-%s' % k)
         args.append(str(v))
     args = ' '.join(args)
-    cmd = '/usr/local/bin/primitive %s' % args
+    cmd = '{0} {1}'.format(primitive_path, args)
     subprocess.call(cmd, shell=True)
 
 
 def create_wallpaper(args):
+    download_path = None
+
     try:
-        photos = filter_by_aspect_ratio(interesting(date=random_date()), 4.0/3.1, 22.0/9)
+        print 'Finding interesting photo...'
+        photos = interesting(date=random_date())
         photo = random.choice(photos)
+        aspect_ratio = get_aspect_ratio(photo)
+
+        print 'Downloading photo...'
         url = photo_url(photo, 'z')
         download_path = os.path.join('/tmp', photo['id'] + '.png')
         download_photo(url, download_path)
 
         output_path = os.path.expanduser(args.output)
+        output_path = os.path.join(output_path, 'landscape' if aspect_ratio > 1 else 'portrait')
         if not os.path.exists(output_path):
             os.makedirs(output_path)
 
@@ -138,15 +135,18 @@ def create_wallpaper(args):
         config.randomize()
         config.validate()
 
-        primitive(i=download_path,
+        print 'Generating wallpaper with parameters {0}'.format(config)
+        primitive(args.primitive_path,
+                  i=download_path,
                   s=args.size,
                   o='\'{0}\''.format(os.path.join(output_path, photo['id'] + '.png')),
                   **config)
+        print 'Done!'
     except Exception as e:
         print e
 
     finally:
-        if os.path.exists(download_path):
+        if download_path is not None and os.path.exists(download_path):
             os.remove(download_path)
 
 
@@ -154,6 +154,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--output', help="path to output directory", required=True)
     parser.add_argument('-s', '--size', type=int, help="width of output image", required=True)
+    parser.add_argument('--primitive_path', help="path to primitive executable", default='/usr/local/bin/primitive')
     parser.add_argument('-n', '--num', type=int, help="number of wallpapers to generate", default=1)
     args = parser.parse_args()
 
