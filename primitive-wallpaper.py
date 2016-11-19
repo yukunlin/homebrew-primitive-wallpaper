@@ -24,7 +24,7 @@ class AttrDict(dict):
 class Config(AttrDict):
     def randomize(self):
         self.m = random.choice([1, 5, 6, 7])
-        self.n = random.randint(18, 50) * 10
+        self.n = random.randint(15, 50) * 10
         self.rep = 0
         self.a = 128
         self.r = 256
