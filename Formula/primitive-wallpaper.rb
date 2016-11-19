@@ -48,9 +48,6 @@ class PrimitiveWallpaper < Formula
                     <string>4000</string>
                 </array>
 
-                <key>RunAtLoad</key>
-                <true/>
-
                 <key>ProcessType</key>
                 <string>Background</string>
 
@@ -64,13 +61,7 @@ class PrimitiveWallpaper < Formula
                     </dict>
                     <dict>
                         <key>Hour</key>
-                        <integer>18</integer>
-                        <key>Minute</key>
                         <integer>0</integer>
-                    </dict>
-                    <dict>
-                        <key>Hour</key>
-                        <integer>21</integer>
                         <key>Minute</key>
                         <integer>0</integer>
                     </dict>
