@@ -8,11 +8,11 @@ echo MY_API_KEY > ~/.flickr_api_key
 
 ###Install
 ```
-brew install --HEAD  primitive-wallpaper --with-launchd
+brew install --HEAD  primitive-wallpaper
 ```
 
 ###Start Launch Agent
-Launch agent runs ```primitive-wallpaper``` every 6 hours to generate a wallpaper. Puts it in ```~/Pictures/primitive-wallpapers```.
+Launch agent runs ```primitive-wallpaper``` at regular intervals. Output is put in ```~/Pictures/primitive-wallpapers```.
 
 ```
 brew services start yukunlin/primitive-wallpaper/primitive-wallpaper
@@ -21,7 +21,7 @@ brew services start yukunlin/primitive-wallpaper/primitive-wallpaper
 ##Misc
 ###Generate Ten 3000px Wide Images
 ```
-primitive-wallpaper -o ~/Pictures/primitive-wallpapers -s 3000 -n 10
+primitive-wallpaper -o ~/Pictures/primitive-wallpaper -s 3000 -n 10
 ```
 ###Stop Launch Agent
 ```
