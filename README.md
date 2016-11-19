@@ -18,6 +18,9 @@ Launch agent runs ```primitive-wallpaper``` at regular intervals. Output is put 
 brew services start yukunlin/primitive-wallpaper/primitive-wallpaper
 ```
 
+###Change Desktop Picture
+System Preference, Desktop & Screen Saver, add ```~/Pictures/primitive-wallpaper/landscape``` as a folder. If the launch agent is running, new images will be added daily.
+
 ##Misc
 ###Generate Ten 3000px Wide Images
 ```
