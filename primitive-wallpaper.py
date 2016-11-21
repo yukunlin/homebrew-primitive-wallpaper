@@ -44,7 +44,7 @@ class Config(AttrDict):
     def validate(self):
         self.m = clamp(self.m, 0, 8)
         if self.m == 6:
-            self.n = random.randint(1500, 2000)
+            self.n = random.randint(1400, 2000)
 
     @property
     def description(self):
