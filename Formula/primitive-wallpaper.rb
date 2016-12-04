@@ -1,9 +1,9 @@
 class PrimitiveWallpaper < Formula
     desc "Abstract wallpapers from Flickr, using primitive"
     homepage "https://github.com/yukunlin/homebrew-primitive-wallpaper"
-    url "https://github.com/yukunlin/homebrew-primitive-wallpaper.git", :revision => "7546d0cda89f315a3f1689a3c9f486f3fc611f00"
+    url "https://github.com/yukunlin/homebrew-primitive-wallpaper.git", :revision => "aa4b2d7b73beda3f045c6410cf036808f0a29fd7"
     head "https://github.com/yukunlin/homebrew-primitive-wallpaper.git", :branch => "master"
-    version "1.0"
+    version "1.0.1"
 
     option "without-launchd", "Without launch agent to generate wallpapers automatically"
 
