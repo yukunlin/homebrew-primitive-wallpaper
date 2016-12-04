@@ -7,6 +7,7 @@ import subprocess
 import argparse
 import datetime
 import time
+import sys
 
 """Based off https://github.com/fogleman/primitive/blob/master/bot/main.py
 """
@@ -188,7 +189,7 @@ if __name__ == '__main__':
 
     if response is None:
         print 'No network connection'
-        exit(1)
+        sys.exit(1)
 
     for n in xrange(args.num):
         create_wallpaper(args)
