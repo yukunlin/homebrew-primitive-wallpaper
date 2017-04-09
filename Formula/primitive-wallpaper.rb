@@ -3,7 +3,7 @@ class PrimitiveWallpaper < Formula
     homepage "https://github.com/yukunlin/homebrew-primitive-wallpaper"
     url "https://github.com/yukunlin/homebrew-primitive-wallpaper.git", :revision => "e66a7c319679a5f9c7601afbc67262b23bbb15e9"
     head "https://github.com/yukunlin/homebrew-primitive-wallpaper.git", :branch => "master"
-    version "1.0.1"
+    version "1.0.2"
 
     option "without-launchd", "Without launch agent to generate wallpapers automatically"
 
